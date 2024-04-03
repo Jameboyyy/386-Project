@@ -53,24 +53,24 @@ class Enemy(pg.sprite.Sprite):
         sprite_sheet_image = pg.image.load(path).convert_alpha()
         frame_width = sprite_sheet_image.get_width() // frame_count
         frames = [sprite_sheet_image.subsurface(pg.Rect(i * frame_width, 0, frame_width, sprite_sheet_image.get_height())) for i in range(frame_count)]
-        # Flip each frame horizontally if necessary
+       
         return [pg.transform.flip(frame, True, False) for frame in frames]
 
     def update(self):
         now = pg.time.get_ticks()
 
-        # Handle death animation specifically
+       
         if self.state == 'die':
-            # Ensure the animation only plays once and stops at the last frame
-            if self.current_frame < len(self.animations[self.state]) - 1:  # Check if not on last frame
-                if now - self.last_update_time > 100:  # Control frame rate of the animation
+            
+            if self.current_frame < len(self.animations[self.state]) - 1:  
+                if now - self.last_update_time > 100: 
                     self.last_update_time = now
-                    self.current_frame += 1  # Move to the next frame
-            # Set the image to the current frame
+                    self.current_frame += 1  
+           
             self.image = self.animations[self.state][self.current_frame]
-            return  # Skip other updates if in 'die' state
+            return  
 
-        # Switch between 'shield' and 'attack' states as before
+      
         if self.state == 'shield' and now - self.behavior_timer > self.shield_duration:
             self.change_state('attack')
             self.behavior_timer = now
@@ -78,7 +78,7 @@ class Enemy(pg.sprite.Sprite):
             self.change_state('shield')
             self.behavior_timer = now
         
-        # Update animation frame for other states
+      
         if now - self.last_update_time > 100:
             self.last_update_time = now
             self.current_frame = (self.current_frame + 1) % len(self.animations[self.state])
@@ -88,4 +88,4 @@ class Enemy(pg.sprite.Sprite):
     def change_state(self, new_state):
         if new_state in self.animations:
             self.state = new_state
-            self.current_frame = 0  # Reset animation frame
+            self.current_frame = 0  
